@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"axios": "^1.2.6",
 		"read-excel-file": "^5.5.3",
 		"xlsx": "^0.18.5",
 		"zod": "^3.20.2"

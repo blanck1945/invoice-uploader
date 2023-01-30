@@ -28,9 +28,6 @@ export const parseStringToDate = (date: string | null) => {
 	);
 };
 
-const parseDate = (date: Date) =>
-	date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-
 export const createInvoiceObject = (invoiceArr: any[]) => {
 	let toObjInvoices: Invoice[] = [];
 
