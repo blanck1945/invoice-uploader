@@ -30,8 +30,6 @@ export const axiosSender = async (data: SenderData, lambda: LambdaKeys) => {
 			data
 		});
 
-		console.warn(response.data);
-
 		return response.data;
 	} catch (err: any) {
 		//console.log(err);

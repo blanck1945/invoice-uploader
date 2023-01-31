@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { axiosFetcher } from '../../actions/axios.fetcher';
 	import { createEventDispatcher } from 'svelte';
+	import { Circle } from 'svelte-loading-spinners';
 	import type { BubbleCompany, UserCredentials } from '../../validations/compnayType';
 
 	// Props
@@ -9,6 +10,7 @@
 
 	// Variables
 	let buttonRef: HTMLButtonElement;
+	let showValidatingCompanyLoader: boolean = false;
 	const dispatch = createEventDispatcher();
 
 	// User credentials
@@ -18,9 +20,11 @@
 	};
 
 	const getCompany = async (): Promise<void> => {
+		showValidatingCompanyLoader = true;
 		const companyRsponse = await axiosFetcher('Empresas', credentialsValues);
 		dispatch('fetchingCompany', companyRsponse);
 		dispatch('openCompanyModal');
+		showValidatingCompanyLoader = false;
 	};
 </script>
 
@@ -30,14 +34,16 @@
 			<label for="companyDoc">NIT de la empresa</label>
 			<input id="companyDoc" class="border" bind:value={credentialsValues.companyDoc} />
 		</div>
-		<!-- <div class="flex flex-col">
-        <label for="companyId">Id de la empresa</label>
-		<input id="companyId" class="border" bind:value={credentialsValues.companyId} />
-	</div> -->
 		<button bind:this={buttonRef} class="hidden" />
 	</form>
 	<div class="flex items-center justify-between mt-3">
-		<button on:click={() => buttonRef.click()} class="btn btn-save">Validar NIT</button>
+		<button on:click={() => buttonRef.click()} class="btn btn-save">
+			{#if showValidatingCompanyLoader}
+				<Circle size="25" unit="px" color="#006200" />
+			{:else}
+				Validar NIT
+			{/if}
+		</button>
 		{#if companyObj}
 			<button on:click={() => dispatch('openCompanyModal')} class="btn btn-open">Ver empresa</button
 			>

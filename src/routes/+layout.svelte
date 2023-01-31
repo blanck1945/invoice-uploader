@@ -3,7 +3,7 @@
 </script>
 
 <nav class="border-b h-16 flex items-center justify-between px-4">
-	<p>Version: <span class="font-bold">Beta 0.0.1</span></p>
+	<p>Version: <span class="font-bold">Beta 0.0.2</span></p>
 	<div>
 		<a
 			class="mr-2 border p-2 rounded-md transition-all hover:bg-slate-400 hover:text-white"

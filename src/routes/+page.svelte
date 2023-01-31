@@ -16,6 +16,7 @@
 	import SuccessModal from '../components/SuccessModal/SuccessModal.svelte';
 	import { modals } from '../store/modal.store';
 	import { ModalsKeys } from '../store/modal.store';
+	import InvoiceActions from '../components/InvoiceActions/InvoiceActions.svelte';
 
 	// Variables
 	let file: Row[] = [];
@@ -28,11 +29,10 @@
 	let modalData: any = null;
 	let filename: string = 'Subir un archivo';
 	let validInvoices: boolean = false;
+	let showCreatingInvoiceLoader: boolean = false;
 	// HTML elements
 	let uploadInput: HTMLInputElement;
 	let credentialsForm: HTMLFormElement;
-	// Computed Props
-	$: canSaveInvoices = companyObj === undefined || invoicesObj.length === 0 || !validInvoices;
 
 	const removeNullFiles = (arr: any[]) => {
 		const validRows: any[] = [];
@@ -66,8 +66,6 @@
 			tableData = validFile;
 		}
 
-		console.warn(tableData);
-
 		invoicesObj = createInvoiceObject(tableData);
 
 		const { validationHasInvalidValues, result, hasErrors } = await validateSchema(invoicesObj);
@@ -92,6 +90,7 @@
 	const handleClick = () => uploadInput.click();
 
 	const postInvoices = async () => {
+		showCreatingInvoiceLoader = true;
 		const dataToSend: DataToSend = {
 			companyDoc: companyObj?.nit_empresa.toString(),
 			companyId: companyObj?._id,
@@ -103,20 +102,13 @@
 		invoicesCreadtedArray = dataToSend.invoices.length;
 
 		modals.toogleModal(ModalsKeys.success);
+		showCreatingInvoiceLoader = false;
 	};
 
 	const updateInvoiceRow = async (formValues: any) => {
 		await validateData(formValues.detail, false);
 		modals.toogleModal(ModalsKeys.invoice);
 	};
-
-	$: credentialsState = companyObj === undefined ? 'No hay empresa validada' : 'Empresa valida';
-	$: invoiceStateText =
-		invoicesObj.length === 0
-			? 'No hay facturas cargadas'
-			: hasInvalidValues.includes('error')
-			? 'ERROR - no se puede cargar'
-			: 'OK - Se puede cargar';
 </script>
 
 <div class="w-full px-2">
@@ -147,28 +139,18 @@
 			{credentialsForm}
 			{companyObj}
 		/>
-		<div class="flex flex-col justify-start px-2">
-			<div class="h-1/2">
-				<p class={validInvoices ? 'text-green-600' : 'text-red-600'}>
-					Facturas: {invoiceStateText}
-				</p>
-				<p class={companyObj === undefined ? 'text-red-600' : 'text-green-600'}>
-					Credenciales: {credentialsState}
-				</p>
-			</div>
-			<div class="mt-1">
-				<button
-					disabled={canSaveInvoices}
-					on:click={postInvoices}
-					class={`btn ${Boolean(canSaveInvoices) ? 'btn-disabled' : 'btn-save'} `}
-					>Crear Facturas</button
-				>
-			</div>
-		</div>
+		<InvoiceActions
+			{companyObj}
+			{hasInvalidValues}
+			{invoicesObj}
+			{postInvoices}
+			{validInvoices}
+			{showCreatingInvoiceLoader}
+		/>
 		<SelectEntity />
 	</div>
 
-	<TableHeader />
+	<TableHeader {invoicesObj} />
 	<Table {resultIndicator} {showModal} {tableData} />
 </div>
 

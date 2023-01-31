@@ -38,7 +38,7 @@ export const createInvoiceObject = (invoiceArr: any[]) => {
 		toObjInvoices = [
 			...toObjInvoices,
 			{
-				providerDoc: invoice[0],
+				providerDoc: invoice[0].toString(),
 				providerName: invoice[1],
 				invoiceNumber: invoice[2],
 				total: parseInt(invoice[3]),
